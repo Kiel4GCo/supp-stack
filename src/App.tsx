@@ -6,7 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import StackBuilder from "./pages/StackBuilder";
 import DeficiencyAdvisor from "./pages/DeficiencyAdvisor";
+import SupplementDetail from "./pages/SupplementDetail";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,9 +21,11 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/supplement/:id" element={<SupplementDetail />} />
           <Route path="/stack-builder" element={<StackBuilder />} />
           <Route path="/deficiency-advisor" element={<DeficiencyAdvisor />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
