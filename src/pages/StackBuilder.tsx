@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/components/layout/Layout';
 import { useStack } from '@/hooks/useStack';
@@ -15,12 +16,15 @@ import {
   AlertTriangle, 
   Zap,
   ArrowRight,
-  Pill
+  Pill,
+  Printer
 } from 'lucide-react';
 import { TIMING_LABELS } from '@/types/supplement';
 import { cn } from '@/lib/utils';
+import { PrintableSchedule } from '@/components/stack/PrintableSchedule';
 
 const StackBuilder = () => {
+  const printRef = useRef<HTMLDivElement>(null);
   const { stack, removeFromStack, clearStack } = useStack();
   const supplementIds = stack.map(item => item.supplement.id);
   const { data: interactions } = useStackInteractions(supplementIds);
@@ -42,6 +46,10 @@ const StackBuilder = () => {
   const hasConflicts = interactions?.conflicts && interactions.conflicts.length > 0;
   const hasSynergies = interactions?.synergies && interactions.synergies.length > 0;
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -53,10 +61,16 @@ const StackBuilder = () => {
             </p>
           </div>
           {stack.length > 0 && (
-            <Button variant="outline" onClick={clearStack}>
-              <Trash2 className="h-4 w-4 mr-2" />
-              Clear All
-            </Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={handlePrint}>
+                <Printer className="h-4 w-4 mr-2" />
+                Print Schedule
+              </Button>
+              <Button variant="outline" onClick={clearStack}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Clear All
+              </Button>
+            </div>
           )}
         </div>
 
@@ -338,6 +352,16 @@ const StackBuilder = () => {
             </Card>
           </>
         )}
+
+        {/* Printable Schedule (hidden on screen, visible when printing) */}
+        <PrintableSchedule
+          ref={printRef}
+          stack={stack}
+          morningSupplements={morningSupplements}
+          withFoodSupplements={withFoodSupplements}
+          eveningSupplements={eveningSupplements}
+          anytimeSupplements={anytimeSupplements}
+        />
       </div>
     </Layout>
   );
