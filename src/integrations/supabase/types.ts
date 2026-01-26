@@ -104,6 +104,75 @@ export type Database = {
           },
         ]
       }
+      saved_stack_items: {
+        Row: {
+          created_at: string
+          days_of_week: string[]
+          id: string
+          notes: string | null
+          reminder_time: string | null
+          stack_id: string
+          supplement_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_of_week?: string[]
+          id?: string
+          notes?: string | null
+          reminder_time?: string | null
+          stack_id: string
+          supplement_id: string
+        }
+        Update: {
+          created_at?: string
+          days_of_week?: string[]
+          id?: string
+          notes?: string | null
+          reminder_time?: string | null
+          stack_id?: string
+          supplement_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_stack_items_stack_id_fkey"
+            columns: ["stack_id"]
+            isOneToOne: false
+            referencedRelation: "saved_stacks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_stack_items_supplement_id_fkey"
+            columns: ["supplement_id"]
+            isOneToOne: false
+            referencedRelation: "supplements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_stacks: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       supplement_interactions: {
         Row: {
           created_at: string
