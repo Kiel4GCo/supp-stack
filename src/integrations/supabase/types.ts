@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      adherence_logs: {
+        Row: {
+          created_at: string
+          id: string
+          logged_date: string
+          notes: string | null
+          stack_item_id: string | null
+          supplement_id: string
+          taken: boolean
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logged_date: string
+          notes?: string | null
+          stack_item_id?: string | null
+          supplement_id: string
+          taken?: boolean
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logged_date?: string
+          notes?: string | null
+          stack_item_id?: string | null
+          supplement_id?: string
+          taken?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adherence_logs_stack_item_id_fkey"
+            columns: ["stack_item_id"]
+            isOneToOne: false
+            referencedRelation: "saved_stack_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "adherence_logs_supplement_id_fkey"
+            columns: ["supplement_id"]
+            isOneToOne: false
+            referencedRelation: "supplements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_users: {
         Row: {
           created_at: string
@@ -153,21 +201,27 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_public: boolean | null
           name: string
+          share_token: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_public?: boolean | null
           name: string
+          share_token?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_public?: boolean | null
           name?: string
+          share_token?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -220,6 +274,7 @@ export type Database = {
           benefits: string[]
           category: Database["public"]["Enums"]["supplement_category"]
           contraindications: string[] | null
+          cost_per_unit: number | null
           created_at: string
           description: string
           dietary_preferences:
@@ -231,13 +286,16 @@ export type Database = {
           image_url: string | null
           name: string
           optimal_timing: Database["public"]["Enums"]["supplement_timing"][]
+          servings_per_day: number | null
           side_effects: string[] | null
+          units_per_container: number | null
           updated_at: string
         }
         Insert: {
           benefits?: string[]
           category: Database["public"]["Enums"]["supplement_category"]
           contraindications?: string[] | null
+          cost_per_unit?: number | null
           created_at?: string
           description: string
           dietary_preferences?:
@@ -249,13 +307,16 @@ export type Database = {
           image_url?: string | null
           name: string
           optimal_timing?: Database["public"]["Enums"]["supplement_timing"][]
+          servings_per_day?: number | null
           side_effects?: string[] | null
+          units_per_container?: number | null
           updated_at?: string
         }
         Update: {
           benefits?: string[]
           category?: Database["public"]["Enums"]["supplement_category"]
           contraindications?: string[] | null
+          cost_per_unit?: number | null
           created_at?: string
           description?: string
           dietary_preferences?:
@@ -267,7 +328,9 @@ export type Database = {
           image_url?: string | null
           name?: string
           optimal_timing?: Database["public"]["Enums"]["supplement_timing"][]
+          servings_per_day?: number | null
           side_effects?: string[] | null
+          units_per_container?: number | null
           updated_at?: string
         }
         Relationships: []
