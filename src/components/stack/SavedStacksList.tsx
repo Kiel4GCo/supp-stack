@@ -20,12 +20,15 @@ import {
   Clock, 
   Calendar,
   Loader2,
-  LogIn
+  LogIn,
+  Globe
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSavedStacks, useDeleteStack, type SavedStack } from '@/hooks/useSavedStacks';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import { ShareStackDialog } from './ShareStackDialog';
+import { DuplicateStackButton } from './DuplicateStackButton';
 
 interface SavedStacksListProps {
   onLoadStack: (stack: SavedStack) => void;
@@ -147,9 +150,15 @@ export function SavedStacksList({ onLoadStack }: SavedStacksListProps) {
                             {remindersCount} reminder{remindersCount !== 1 ? 's' : ''}
                           </Badge>
                         )}
+                        {stack.is_public && (
+                          <Badge variant="outline" className="text-xs text-chart-1 border-chart-1">
+                            <Globe className="h-3 w-3 mr-1" />
+                            Public
+                          </Badge>
+                        )}
                       </div>
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2 ml-4 flex-wrap justify-end">
                       <Button 
                         size="sm" 
                         variant="outline"
@@ -158,6 +167,8 @@ export function SavedStacksList({ onLoadStack }: SavedStacksListProps) {
                         <Download className="h-4 w-4 mr-1" />
                         Load
                       </Button>
+                      <DuplicateStackButton stack={stack} />
+                      <ShareStackDialog stack={stack} />
                       <Button 
                         size="icon" 
                         variant="ghost"

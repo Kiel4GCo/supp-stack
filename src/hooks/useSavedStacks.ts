@@ -19,6 +19,8 @@ export interface SavedStack {
   name: string;
   created_at: string;
   updated_at: string;
+  share_token?: string | null;
+  is_public?: boolean;
   items?: SavedStackItem[];
 }
 

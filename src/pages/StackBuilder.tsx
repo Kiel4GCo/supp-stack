@@ -21,7 +21,9 @@ import {
   Pill,
   Printer,
   Calendar,
-  Bell
+  Bell,
+  DollarSign,
+  CalendarDays
 } from 'lucide-react';
 import { TIMING_LABELS } from '@/types/supplement';
 import { cn } from '@/lib/utils';
@@ -30,6 +32,9 @@ import { WeeklySchedule, DAYS_OF_WEEK, type SupplementSchedule, type DayOfWeek }
 import { ReminderSettings } from '@/components/stack/ReminderSettings';
 import { SaveStackDialog } from '@/components/stack/SaveStackDialog';
 import { SavedStacksList } from '@/components/stack/SavedStacksList';
+import { CostTracker } from '@/components/stack/CostTracker';
+import { MonthlyCalendar } from '@/components/stack/MonthlyCalendar';
+import { NotificationSettings } from '@/components/stack/NotificationSettings';
 import type { SavedStack } from '@/hooks/useSavedStacks';
 
 const StackBuilder = () => {
@@ -198,7 +203,7 @@ const StackBuilder = () => {
           </div>
         ) : (
           <Tabs defaultValue="daily" className="space-y-6">
-            <TabsList>
+            <TabsList className="flex-wrap h-auto gap-1">
               <TabsTrigger value="daily" className="gap-2">
                 <Clock className="h-4 w-4" />
                 Daily View
@@ -207,9 +212,17 @@ const StackBuilder = () => {
                 <Calendar className="h-4 w-4" />
                 Weekly View
               </TabsTrigger>
+              <TabsTrigger value="monthly" className="gap-2">
+                <CalendarDays className="h-4 w-4" />
+                Monthly
+              </TabsTrigger>
               <TabsTrigger value="reminders" className="gap-2">
                 <Bell className="h-4 w-4" />
                 Reminders
+              </TabsTrigger>
+              <TabsTrigger value="costs" className="gap-2">
+                <DollarSign className="h-4 w-4" />
+                Costs
               </TabsTrigger>
             </TabsList>
 
@@ -436,11 +449,28 @@ const StackBuilder = () => {
               <SavedStacksList onLoadStack={handleLoadStack} />
             </TabsContent>
 
+            <TabsContent value="monthly" className="space-y-6">
+              <MonthlyCalendar stack={stack} />
+              <SavedStacksList onLoadStack={handleLoadStack} />
+            </TabsContent>
+
             <TabsContent value="reminders" className="space-y-6">
               <ReminderSettings
                 stack={stack}
                 schedules={schedules}
                 onScheduleChange={handleScheduleChange}
+              />
+              <NotificationSettings
+                stack={stack}
+                schedules={schedules}
+              />
+              <SavedStacksList onLoadStack={handleLoadStack} />
+            </TabsContent>
+
+            <TabsContent value="costs" className="space-y-6">
+              <CostTracker
+                stack={stack}
+                schedules={schedules}
               />
               <SavedStacksList onLoadStack={handleLoadStack} />
             </TabsContent>
