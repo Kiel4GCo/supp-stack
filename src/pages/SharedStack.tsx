@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Layout } from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -11,13 +11,35 @@ import {
   ArrowRight, 
   User, 
   Package,
-  AlertTriangle
+  AlertTriangle,
+  Download
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { TIMING_LABELS, CATEGORY_LABELS } from '@/types/supplement';
+import { useStack } from '@/hooks/useStack';
+import { useToast } from '@/hooks/use-toast';
 
 export default function SharedStack() {
   const { shareToken } = useParams<{ shareToken: string }>();
+  const { addToStack } = useStack();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
+  const handleImport = () => {
+    if (!stack?.items?.length) return;
+    let imported = 0;
+    stack.items.forEach((item: any) => {
+      if (item.supplement) {
+        addToStack(item.supplement);
+        imported++;
+      }
+    });
+    toast({
+      title: `Imported ${imported} supplements!`,
+      description: 'Redirecting to Stack Builder...',
+    });
+    navigate('/stack-builder');
+  };
 
   const { data: stack, isLoading, error } = useQuery({
     queryKey: ['shared-stack', shareToken],
@@ -110,8 +132,12 @@ export default function SharedStack() {
               <Package className="h-5 w-5" />
               Supplements
             </CardTitle>
-            <CardDescription>
-              All supplements included in this stack
+            <CardDescription className="flex items-center justify-between">
+              <span>All supplements included in this stack</span>
+              <Button size="sm" onClick={handleImport}>
+                <Download className="h-4 w-4 mr-1" />
+                Import All to My Stack
+              </Button>
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

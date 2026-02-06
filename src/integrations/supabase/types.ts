@@ -152,6 +152,39 @@ export type Database = {
           },
         ]
       }
+      email_reminder_preferences: {
+        Row: {
+          created_at: string
+          days_of_week: string[]
+          email: string
+          enabled: boolean
+          id: string
+          reminder_time: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          days_of_week?: string[]
+          email: string
+          enabled?: boolean
+          id?: string
+          reminder_time?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          days_of_week?: string[]
+          email?: string
+          enabled?: boolean
+          id?: string
+          reminder_time?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       saved_stack_items: {
         Row: {
           created_at: string

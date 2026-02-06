@@ -23,7 +23,8 @@ import {
   Calendar,
   Bell,
   DollarSign,
-  CalendarDays
+  CalendarDays,
+  BarChart3
 } from 'lucide-react';
 import { TIMING_LABELS } from '@/types/supplement';
 import { cn } from '@/lib/utils';
@@ -35,6 +36,8 @@ import { SavedStacksList } from '@/components/stack/SavedStacksList';
 import { CostTracker } from '@/components/stack/CostTracker';
 import { MonthlyCalendar } from '@/components/stack/MonthlyCalendar';
 import { NotificationSettings } from '@/components/stack/NotificationSettings';
+import { AdherenceDashboard } from '@/components/stack/AdherenceDashboard';
+import { EmailReminderSettings } from '@/components/stack/EmailReminderSettings';
 import type { SavedStack } from '@/hooks/useSavedStacks';
 
 const StackBuilder = () => {
@@ -223,6 +226,10 @@ const StackBuilder = () => {
               <TabsTrigger value="costs" className="gap-2">
                 <DollarSign className="h-4 w-4" />
                 Costs
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Analytics
               </TabsTrigger>
             </TabsList>
 
@@ -464,6 +471,7 @@ const StackBuilder = () => {
                 stack={stack}
                 schedules={schedules}
               />
+              <EmailReminderSettings />
               <SavedStacksList onLoadStack={handleLoadStack} />
             </TabsContent>
 
@@ -472,6 +480,11 @@ const StackBuilder = () => {
                 stack={stack}
                 schedules={schedules}
               />
+              <SavedStacksList onLoadStack={handleLoadStack} />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-6">
+              <AdherenceDashboard stack={stack} />
               <SavedStacksList onLoadStack={handleLoadStack} />
             </TabsContent>
           </Tabs>

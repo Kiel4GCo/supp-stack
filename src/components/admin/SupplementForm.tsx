@@ -44,6 +44,9 @@ export function SupplementForm({ supplement, onSubmit, onCancel, isLoading }: Su
   const [contraindications, setContraindications] = useState<string[]>([]);
   const [optimalTiming, setOptimalTiming] = useState<SupplementTiming[]>([]);
   const [dietaryPreferences, setDietaryPreferences] = useState<DietaryPreference[]>([]);
+  const [costPerUnit, setCostPerUnit] = useState<string>('');
+  const [unitsPerContainer, setUnitsPerContainer] = useState<string>('');
+  const [servingsPerDay, setServingsPerDay] = useState<string>('1');
   
   const [newBenefit, setNewBenefit] = useState('');
   const [newSideEffect, setNewSideEffect] = useState('');
@@ -61,6 +64,9 @@ export function SupplementForm({ supplement, onSubmit, onCancel, isLoading }: Su
       setContraindications(supplement.contraindications || []);
       setOptimalTiming(supplement.optimal_timing || []);
       setDietaryPreferences(supplement.dietary_preferences || []);
+      setCostPerUnit(supplement.cost_per_unit?.toString() || '');
+      setUnitsPerContainer(supplement.units_per_container?.toString() || '');
+      setServingsPerDay(supplement.servings_per_day?.toString() || '1');
     }
   }, [supplement]);
 
@@ -77,6 +83,9 @@ export function SupplementForm({ supplement, onSubmit, onCancel, isLoading }: Su
       contraindications,
       optimal_timing: optimalTiming,
       dietary_preferences: dietaryPreferences,
+      cost_per_unit: costPerUnit ? parseFloat(costPerUnit) : null,
+      units_per_container: unitsPerContainer ? parseInt(unitsPerContainer) : null,
+      servings_per_day: servingsPerDay ? parseInt(servingsPerDay) : 1,
     });
   };
 
@@ -351,6 +360,50 @@ export function SupplementForm({ supplement, onSubmit, onCancel, isLoading }: Su
                 </Label>
               </div>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Cost Information</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="cost-per-unit">Cost per Serving ($)</Label>
+              <Input
+                id="cost-per-unit"
+                type="number"
+                step="0.01"
+                min="0"
+                value={costPerUnit}
+                onChange={(e) => setCostPerUnit(e.target.value)}
+                placeholder="0.50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="units-per-container">Servings per Container</Label>
+              <Input
+                id="units-per-container"
+                type="number"
+                min="1"
+                value={unitsPerContainer}
+                onChange={(e) => setUnitsPerContainer(e.target.value)}
+                placeholder="60"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="servings-per-day">Servings per Day</Label>
+              <Input
+                id="servings-per-day"
+                type="number"
+                min="1"
+                value={servingsPerDay}
+                onChange={(e) => setServingsPerDay(e.target.value)}
+                placeholder="1"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
