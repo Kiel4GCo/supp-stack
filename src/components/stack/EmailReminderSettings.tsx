@@ -1,0 +1,152 @@
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { Loader2, Mail, ArrowRight, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useEmailReminderPreferences, useUpsertEmailReminder } from '@/hooks/useEmailReminders';
+import { useToast } from '@/hooks/use-toast';
+
+const ALL_DAYS = [
+  { key: 'monday', label: 'Mon' },
+  { key: 'tuesday', label: 'Tue' },
+  { key: 'wednesday', label: 'Wed' },
+  { key: 'thursday', label: 'Thu' },
+  { key: 'friday', label: 'Fri' },
+  { key: 'saturday', label: 'Sat' },
+  { key: 'sunday', label: 'Sun' },
+];
+
+export function EmailReminderSettings() {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { data: prefs, isLoading: loadingPrefs } = useEmailReminderPreferences(user?.id);
+  const upsert = useUpsertEmailReminder();
+
+  const [enabled, setEnabled] = useState(false);
+  const [email, setEmail] = useState('');
+  const [reminderTime, setReminderTime] = useState('08:00');
+  const [days, setDays] = useState<string[]>(ALL_DAYS.map(d => d.key));
+
+  useEffect(() => {
+    if (prefs) {
+      setEnabled(prefs.enabled);
+      setEmail(prefs.email);
+      setReminderTime(prefs.reminder_time);
+      setDays(prefs.days_of_week);
+    } else if (user?.email) {
+      setEmail(user.email);
+    }
+  }, [prefs, user]);
+
+  const handleSave = async () => {
+    if (!user) return;
+    try {
+      await upsert.mutateAsync({
+        user_id: user.id,
+        enabled,
+        email,
+        reminder_time: reminderTime,
+        days_of_week: days,
+      });
+      toast({ title: 'Email reminder preferences saved!' });
+    } catch {
+      toast({ title: 'Failed to save preferences', variant: 'destructive' });
+    }
+  };
+
+  const toggleDay = (day: string) => {
+    setDays(prev =>
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  };
+
+  if (!user) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center">
+          <Mail className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+          <h3 className="font-medium mb-2">Sign in for email reminders</h3>
+          <Button asChild size="sm">
+            <Link to="/auth">Sign In <ArrowRight className="h-4 w-4 ml-1" /></Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Mail className="h-5 w-5 text-primary" />
+          Email Reminders
+        </CardTitle>
+        <CardDescription>
+          Get daily email reminders as a backup to push notifications
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="email-enabled">Enable email reminders</Label>
+          <Switch
+            id="email-enabled"
+            checked={enabled}
+            onCheckedChange={setEnabled}
+          />
+        </div>
+
+        {enabled && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="reminder-email">Email address</Label>
+              <Input
+                id="reminder-email"
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="your@email.com"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="reminder-time">Reminder time</Label>
+              <Input
+                id="reminder-time"
+                type="time"
+                value={reminderTime}
+                onChange={e => setReminderTime(e.target.value)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Days</Label>
+              <div className="flex flex-wrap gap-2">
+                {ALL_DAYS.map(d => (
+                  <div key={d.key} className="flex items-center gap-1.5">
+                    <Checkbox
+                      id={`email-day-${d.key}`}
+                      checked={days.includes(d.key)}
+                      onCheckedChange={() => toggleDay(d.key)}
+                    />
+                    <Label htmlFor={`email-day-${d.key}`} className="text-sm">{d.label}</Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
+        <Button onClick={handleSave} disabled={upsert.isPending} className="w-full">
+          {upsert.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+          Save Preferences
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}

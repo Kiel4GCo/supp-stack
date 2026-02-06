@@ -43,6 +43,9 @@ export interface Supplement {
   evidence_level: EvidenceLevel;
   dietary_preferences: DietaryPreference[];
   image_url: string | null;
+  cost_per_unit: number | null;
+  units_per_container: number | null;
+  servings_per_day: number | null;
   created_at: string;
   updated_at: string;
 }
