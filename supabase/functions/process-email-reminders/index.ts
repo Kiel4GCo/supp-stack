@@ -91,6 +91,13 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         `,
       });
+
+      // Update last_sent_at
+      await supabase
+        .from('email_reminder_preferences')
+        .update({ last_sent_at: new Date().toISOString() })
+        .eq('id', pref.id);
+
       sent++;
     }
 

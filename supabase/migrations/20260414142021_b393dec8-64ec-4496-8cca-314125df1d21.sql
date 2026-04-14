@@ -1,0 +1,1 @@
+ALTER TABLE public.email_reminder_preferences ADD COLUMN last_sent_at timestamp with time zone DEFAULT NULL;
