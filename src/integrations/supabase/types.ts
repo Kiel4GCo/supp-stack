@@ -159,6 +159,7 @@ export type Database = {
           email: string
           enabled: boolean
           id: string
+          last_sent_at: string | null
           reminder_time: string
           updated_at: string
           user_id: string
@@ -169,6 +170,7 @@ export type Database = {
           email: string
           enabled?: boolean
           id?: string
+          last_sent_at?: string | null
           reminder_time?: string
           updated_at?: string
           user_id: string
@@ -179,6 +181,7 @@ export type Database = {
           email?: string
           enabled?: boolean
           id?: string
+          last_sent_at?: string | null
           reminder_time?: string
           updated_at?: string
           user_id?: string
