@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -13,14 +14,53 @@ import { useEmailReminderPreferences, useUpsertEmailReminder } from '@/hooks/use
 import { useToast } from '@/hooks/use-toast';
 
 const ALL_DAYS = [
-  { key: 'monday', label: 'Mon' },
-  { key: 'tuesday', label: 'Tue' },
-  { key: 'wednesday', label: 'Wed' },
-  { key: 'thursday', label: 'Thu' },
-  { key: 'friday', label: 'Fri' },
-  { key: 'saturday', label: 'Sat' },
-  { key: 'sunday', label: 'Sun' },
+  { key: 'monday', label: 'Mon', index: 1 },
+  { key: 'tuesday', label: 'Tue', index: 2 },
+  { key: 'wednesday', label: 'Wed', index: 3 },
+  { key: 'thursday', label: 'Thu', index: 4 },
+  { key: 'friday', label: 'Fri', index: 5 },
+  { key: 'saturday', label: 'Sat', index: 6 },
+  { key: 'sunday', label: 'Sun', index: 0 },
 ];
+
+function getNextScheduledTime(reminderTime: string, daysOfWeek: string[]): string | null {
+  if (!daysOfWeek.length || !reminderTime) return null;
+  const now = new Date();
+  const [hours, minutes] = reminderTime.split(':').map(Number);
+  const dayNameToIndex: Record<string, number> = {
+    sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+    thursday: 4, friday: 5, saturday: 6,
+  };
+  const enabledIndices = daysOfWeek.map(d => dayNameToIndex[d]).filter(d => d !== undefined).sort((a, b) => a - b);
+  if (!enabledIndices.length) return null;
+
+  for (let offset = 0; offset < 7; offset++) {
+    const candidate = new Date(now);
+    candidate.setDate(candidate.getDate() + offset);
+    candidate.setHours(hours, minutes, 0, 0);
+    if (enabledIndices.includes(candidate.getDay()) && candidate > now) {
+      return candidate.toLocaleString(undefined, {
+        weekday: 'short', month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit',
+      });
+    }
+  }
+  return null;
+}
+
+function formatLastSent(dateStr: string | null | undefined): string | null {
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays}d ago`;
+}
 
 export function EmailReminderSettings() {
   const { user } = useAuth();
