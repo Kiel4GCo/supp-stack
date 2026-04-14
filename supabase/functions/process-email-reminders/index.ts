@@ -99,6 +99,7 @@ const handler = async (req: Request): Promise<Response> => {
         .eq('id', pref.id);
 
       sent++;
+    }
 
     return new Response(JSON.stringify({ message: `Sent ${sent} reminders`, count: sent }), {
       status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
