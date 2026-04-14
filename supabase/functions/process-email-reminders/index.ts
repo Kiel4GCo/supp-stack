@@ -91,8 +91,14 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         `,
       });
+
+      // Update last_sent_at
+      await supabase
+        .from('email_reminder_preferences')
+        .update({ last_sent_at: new Date().toISOString() })
+        .eq('id', pref.id);
+
       sent++;
-    }
 
     return new Response(JSON.stringify({ message: `Sent ${sent} reminders`, count: sent }), {
       status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
