@@ -182,6 +182,32 @@ export function EmailReminderSettings() {
           </>
         )}
 
+        {enabled && prefs && (
+          <>
+            <Separator />
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Status</p>
+              <div className="flex items-center gap-2 text-sm">
+                <CalendarCheck className="h-4 w-4 text-primary" />
+                <span className="text-muted-foreground">Last sent:</span>
+                <span className="font-medium">
+                  {formatLastSent((prefs as any).last_sent_at) ?? 'Never'}
+                </span>
+              </div>
+              {(() => {
+                const next = getNextScheduledTime(reminderTime, days);
+                return next ? (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <span className="text-muted-foreground">Next scheduled:</span>
+                    <span className="font-medium">{next}</span>
+                  </div>
+                ) : null;
+              })()}
+            </div>
+          </>
+        )}
+
         <Button onClick={handleSave} disabled={upsert.isPending} className="w-full">
           {upsert.isPending && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
           Save Preferences
