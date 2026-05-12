@@ -263,6 +263,42 @@ export type Database = {
         }
         Relationships: []
       }
+      supplement_audit_log: {
+        Row: {
+          changed_by_email: string | null
+          created_at: string
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          operation: string
+          source_text: string | null
+          supplement_id: string | null
+          supplement_name: string
+        }
+        Insert: {
+          changed_by_email?: string | null
+          created_at?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          operation: string
+          source_text?: string | null
+          supplement_id?: string | null
+          supplement_name: string
+        }
+        Update: {
+          changed_by_email?: string | null
+          created_at?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          operation?: string
+          source_text?: string | null
+          supplement_id?: string | null
+          supplement_name?: string
+        }
+        Relationships: []
+      }
       supplement_interactions: {
         Row: {
           created_at: string
