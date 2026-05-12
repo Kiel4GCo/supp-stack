@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.log_supplement_changes() FROM PUBLIC, anon, authenticated;
