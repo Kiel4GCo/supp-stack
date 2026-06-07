@@ -10,6 +10,7 @@ import SupplementDetail from "./pages/SupplementDetail";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import SharedStack from "./pages/SharedStack";
+import BloodWork from "./pages/BloodWork";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/supplement/:id" element={<SupplementDetail />} />
           <Route path="/stack-builder" element={<StackBuilder />} />
           <Route path="/deficiency-advisor" element={<DeficiencyAdvisor />} />
+          <Route path="/blood-work" element={<BloodWork />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/shared-stack/:shareToken" element={<SharedStack />} />

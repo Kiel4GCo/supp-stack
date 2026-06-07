@@ -80,6 +80,180 @@ export type Database = {
         }
         Relationships: []
       }
+      blood_marker_supplements: {
+        Row: {
+          created_at: string
+          direction: string
+          id: string
+          marker_id: string
+          notes: string | null
+          priority: number
+          supplement_id: string
+        }
+        Insert: {
+          created_at?: string
+          direction: string
+          id?: string
+          marker_id: string
+          notes?: string | null
+          priority?: number
+          supplement_id: string
+        }
+        Update: {
+          created_at?: string
+          direction?: string
+          id?: string
+          marker_id?: string
+          notes?: string | null
+          priority?: number
+          supplement_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blood_marker_supplements_marker_id_fkey"
+            columns: ["marker_id"]
+            isOneToOne: false
+            referencedRelation: "blood_markers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blood_marker_supplements_supplement_id_fkey"
+            columns: ["supplement_id"]
+            isOneToOne: false
+            referencedRelation: "supplements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      blood_markers: {
+        Row: {
+          category: string | null
+          created_at: string
+          default_unit: string
+          description: string | null
+          id: string
+          key: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          default_unit: string
+          description?: string | null
+          id?: string
+          key: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          default_unit?: string
+          description?: string | null
+          id?: string
+          key?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      blood_work_reports: {
+        Row: {
+          created_at: string
+          id: string
+          lab_name: string | null
+          notes: string | null
+          original_file_path: string | null
+          source: string
+          test_date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lab_name?: string | null
+          notes?: string | null
+          original_file_path?: string | null
+          source?: string
+          test_date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lab_name?: string | null
+          notes?: string | null
+          original_file_path?: string | null
+          source?: string
+          test_date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      blood_work_results: {
+        Row: {
+          created_at: string
+          id: string
+          marker_id: string
+          notes: string | null
+          range_high: number | null
+          range_low: number | null
+          report_id: string
+          status: string
+          unit: string
+          updated_at: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          marker_id: string
+          notes?: string | null
+          range_high?: number | null
+          range_low?: number | null
+          report_id: string
+          status?: string
+          unit: string
+          updated_at?: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          marker_id?: string
+          notes?: string | null
+          range_high?: number | null
+          range_low?: number | null
+          report_id?: string
+          status?: string
+          unit?: string
+          updated_at?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blood_work_results_marker_id_fkey"
+            columns: ["marker_id"]
+            isOneToOne: false
+            referencedRelation: "blood_markers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blood_work_results_report_id_fkey"
+            columns: ["report_id"]
+            isOneToOne: false
+            referencedRelation: "blood_work_reports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       deficiencies: {
         Row: {
           created_at: string
