@@ -10,10 +10,11 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as strin
  *   TEST_ADMIN_EMAIL / TEST_ADMIN_PASSWORD  -> a user that exists in admin_users
  *   TEST_USER_EMAIL  / TEST_USER_PASSWORD   -> a regular (non-admin) user
  */
-const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL;
-const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD;
-const USER_EMAIL = process.env.TEST_USER_EMAIL;
-const USER_PASSWORD = process.env.TEST_USER_PASSWORD;
+const env = (import.meta as any).env ?? {};
+const ADMIN_EMAIL = env.TEST_ADMIN_EMAIL as string | undefined;
+const ADMIN_PASSWORD = env.TEST_ADMIN_PASSWORD as string | undefined;
+const USER_EMAIL = env.TEST_USER_EMAIL as string | undefined;
+const USER_PASSWORD = env.TEST_USER_PASSWORD as string | undefined;
 
 const hasAdmin = Boolean(ADMIN_EMAIL && ADMIN_PASSWORD);
 const hasUser = Boolean(USER_EMAIL && USER_PASSWORD);
