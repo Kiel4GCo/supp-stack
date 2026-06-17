@@ -19,7 +19,7 @@ export function useAuth() {
         // Check admin status after auth state changes
         if (session?.user) {
           setTimeout(() => {
-            checkAdminStatus(session.user.email);
+            checkAdminStatus(session.user.id);
           }, 0);
         } else {
           setIsAdmin(false);
@@ -34,27 +34,22 @@ export function useAuth() {
       setLoading(false);
       
       if (session?.user) {
-        checkAdminStatus(session.user.email);
+        checkAdminStatus(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const checkAdminStatus = async (email: string | undefined) => {
-    if (!email) {
+  const checkAdminStatus = async (userId: string | undefined) => {
+    if (!userId) {
       setIsAdmin(false);
       return;
     }
 
     try {
-      const { data, error } = await supabase
-        .from('admin_users')
-        .select('id')
-        .eq('email', email)
-        .maybeSingle();
-
-      setIsAdmin(!error && !!data);
+      const { data, error } = await supabase.rpc('is_admin', { _user_id: userId });
+      setIsAdmin(!error && data === true);
     } catch {
       setIsAdmin(false);
     }
