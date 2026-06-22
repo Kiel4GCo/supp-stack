@@ -16,3 +16,8 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Run admin-access vitest suite
         run: bunx vitest run src/test/admin-access.test.ts
+        env:
+          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
