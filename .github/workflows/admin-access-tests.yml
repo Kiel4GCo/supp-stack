@@ -7,6 +7,14 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      # Secrets are empty strings for pull_request runs from forks, which is
+      # the supported way to skip the signed-in branches. The vitest suite
+      # uses describe.skipIf(!hasAdmin/!hasUser) so missing creds are a no-op.
+      TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+      TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+      TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+      TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -14,10 +22,18 @@ jobs:
           bun-version: latest
       - name: Install dependencies
         run: bun install --frozen-lockfile
+      - name: Report which branches will run
+        run: |
+          echo "Anon branch: always runs"
+          if [ -n "$TEST_ADMIN_EMAIL" ] && [ -n "$TEST_ADMIN_PASSWORD" ]; then
+            echo "Admin branch: will run"
+          else
+            echo "Admin branch: SKIPPED (secrets unavailable, e.g. fork PR)"
+          fi
+          if [ -n "$TEST_USER_EMAIL" ] && [ -n "$TEST_USER_PASSWORD" ]; then
+            echo "Non-admin user branch: will run"
+          else
+            echo "Non-admin user branch: SKIPPED (secrets unavailable, e.g. fork PR)"
+          fi
       - name: Run admin-access vitest suite
         run: bunx vitest run src/test/admin-access.test.ts
-        env:
-          TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
-          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
-          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
-          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
