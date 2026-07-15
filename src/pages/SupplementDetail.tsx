@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { useSupplement } from '@/hooks/useSupplements';
 import { useSupplementInteractions } from '@/hooks/useInteractions';
@@ -88,6 +89,21 @@ const SupplementDetail = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>{`${supplement.name} — Benefits, Dosage & Timing | SupplementInfo`}</title>
+        <meta name="description" content={supplement.description?.slice(0, 160)} />
+        <link rel="canonical" href={`/supplement/${supplement.id}`} />
+        <meta property="og:title" content={`${supplement.name} — SupplementInfo`} />
+        <meta property="og:description" content={supplement.description?.slice(0, 160)} />
+        <meta property="og:url" content={`/supplement/${supplement.id}`} />
+        <meta property="og:type" content="article" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "MedicalEntity",
+          "name": supplement.name,
+          "description": supplement.description,
+        })}</script>
+      </Helmet>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">

@@ -267,7 +267,7 @@ const StackBuilder = () => {
                           <Button 
                             size="icon" 
                             variant="ghost" 
-                            className="h-6 w-6" 
+                            className="h-6 w-6" aria-label="Remove from stack" 
                             onClick={() => removeFromStack(item.supplement.id)}
                           >
                             <Trash2 className="h-3 w-3" />
@@ -309,7 +309,7 @@ const StackBuilder = () => {
                           <Button 
                             size="icon" 
                             variant="ghost" 
-                            className="h-6 w-6" 
+                            className="h-6 w-6" aria-label="Remove from stack" 
                             onClick={() => removeFromStack(item.supplement.id)}
                           >
                             <Trash2 className="h-3 w-3" />
@@ -351,7 +351,7 @@ const StackBuilder = () => {
                           <Button 
                             size="icon" 
                             variant="ghost" 
-                            className="h-6 w-6" 
+                            className="h-6 w-6" aria-label="Remove from stack" 
                             onClick={() => removeFromStack(item.supplement.id)}
                           >
                             <Trash2 className="h-3 w-3" />
@@ -393,7 +393,7 @@ const StackBuilder = () => {
                           <Button 
                             size="icon" 
                             variant="ghost" 
-                            className="h-6 w-6" 
+                            className="h-6 w-6" aria-label="Remove from stack" 
                             onClick={() => removeFromStack(item.supplement.id)}
                           >
                             <Trash2 className="h-3 w-3" />

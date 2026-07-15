@@ -43,10 +43,11 @@ export function Header() {
 
         {/* Mobile nav */}
         <nav className="flex md:hidden items-center gap-1">
-          {navItems.slice(0, 3).map(({ path, icon: Icon }) => (
+          {navItems.slice(0, 3).map(({ path, label, icon: Icon }) => (
             <Link
               key={path}
               to={path}
+              aria-label={label}
               className={cn(
                 'flex items-center justify-center w-10 h-10 rounded-lg transition-colors',
                 location.pathname === path
