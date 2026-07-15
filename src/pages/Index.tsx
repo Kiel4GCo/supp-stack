@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Layout } from '@/components/layout/Layout';
 import { SupplementGrid } from '@/components/supplements/SupplementGrid';
 import { SearchAndFilter } from '@/components/supplements/SearchAndFilter';
@@ -15,6 +16,15 @@ const Index = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>Supplement Database — Evidence-Based Vitamin & Mineral Guide</title>
+        <meta name="description" content="Browse evidence-based information on vitamins, minerals, herbs, and more. Search, filter, and build your personalized supplement stack." />
+        <link rel="canonical" href="/" />
+        <meta property="og:title" content="Supplement Database — Evidence-Based Guide" />
+        <meta property="og:description" content="Browse evidence-based information on vitamins, minerals, herbs, and more." />
+        <meta property="og:url" content="/" />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="space-y-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-serif font-bold">Supplement Database</h1>
