@@ -1,0 +1,10 @@
+# SupplementInfo
+
+> Evidence-based supplement database with a stack builder, interaction warnings, deficiency advisor, and blood-work insights.
+
+## Pages
+
+- [Supplement Database](/): Search and filter evidence-based supplement information.
+- [Stack Builder](/stack-builder): Build a personalized supplement stack with interaction and timing guidance.
+- [Deficiency Advisor](/deficiency-advisor): Map symptoms to potential deficiencies and suggested supplements.
+- [Blood Work](/blood-work): Upload lab results and get supplement recommendations.
