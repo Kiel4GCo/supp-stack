@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Pill, Beaker, AlertTriangle, LayoutDashboard, Droplet } from 'lucide-react';
+import { Pill, Beaker, AlertTriangle, LayoutDashboard, Droplet, Dumbbell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -7,6 +7,7 @@ const navItems = [
   { path: '/stack-builder', label: 'Stack Builder', icon: Beaker },
   { path: '/deficiency-advisor', label: 'Deficiency Advisor', icon: AlertTriangle },
   { path: '/blood-work', label: 'Blood Work', icon: Droplet },
+  { path: '/muscle-building-guide', label: 'Muscle Building', icon: Dumbbell },
   { path: '/admin', label: 'Admin', icon: LayoutDashboard },
 ];
 
