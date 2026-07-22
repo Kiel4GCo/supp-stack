@@ -8,3 +8,4 @@
 - [Stack Builder](/stack-builder): Build a personalized supplement stack with interaction and timing guidance.
 - [Deficiency Advisor](/deficiency-advisor): Map symptoms to potential deficiencies and suggested supplements.
 - [Blood Work](/blood-work): Upload lab results and get supplement recommendations.
+- [Muscle Building Guide](/muscle-building-guide): Evidence-based guide to supplements for muscle growth, strength, and recovery.
