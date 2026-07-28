@@ -17,11 +17,24 @@ jobs:
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - name: Setup Bun (with retries)
+        uses: nick-fields/retry@v3
         with:
-          bun-version: latest
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 15
+          command: curl -fsSL https://bun.sh/install | bash && echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Install dependencies (with backoff)
+        run: |
+          for attempt in 1 2 3; do
+            if bun install --frozen-lockfile; then
+              exit 0
+            fi
+            echo "bun install failed (attempt $attempt). Retrying in $((attempt * 15))s..."
+            sleep $((attempt * 15))
+          done
+          echo "bun install failed after 3 attempts"
+          exit 1
       - name: Report which branches will run
         run: |
           echo "Anon branch: always runs"

@@ -21,13 +21,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+      - name: Setup Bun (with retries)
+        uses: nick-fields/retry@v3
         with:
-          bun-version: latest
+          timeout_minutes: 5
+          max_attempts: 3
+          retry_wait_seconds: 15
+          command: curl -fsSL https://bun.sh/install | bash && echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
+      - name: Install dependencies (with backoff)
+        run: |
+          for attempt in 1 2 3; do
+            if bun install --frozen-lockfile; then
+              exit 0
+            fi
+            echo "bun install failed (attempt $attempt). Retrying in $((attempt * 15))s..."
+            sleep $((attempt * 15))
+          done
+          echo "bun install failed after 3 attempts"
+          exit 1
 
       - name: Setup Node (for npm audit)
         uses: actions/setup-node@v4
@@ -36,8 +48,17 @@ jobs:
 
       # Generate an npm-style lockfile from package.json so `npm audit` can run
       # without changing the project's primary package manager (Bun).
-      - name: Generate npm lockfile for audit
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Generate npm lockfile for audit (with backoff)
+        run: |
+          for attempt in 1 2 3; do
+            if npm install --package-lock-only --ignore-scripts --no-audit --no-fund; then
+              exit 0
+            fi
+            echo "npm lockfile generation failed (attempt $attempt). Retrying in $((attempt * 15))s..."
+            sleep $((attempt * 15))
+          done
+          echo "npm lockfile generation failed after 3 attempts"
+          exit 1
 
       - name: Run npm audit and save report
         run: npm audit --json > npm-audit-report.json || true
