@@ -39,20 +39,19 @@ jobs:
       - name: Generate npm lockfile for audit
         run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
 
-      - name: Run npm audit (fail on high or critical)
-        run: npm audit --audit-level=high
-
-      - name: Upload audit report on failure
-        if: failure()
+      - name: Run npm audit and save report
         run: npm audit --json > npm-audit-report.json || true
 
-      - name: Save audit artifact
-        if: failure()
+      - name: Upload audit report artifact
         uses: actions/upload-artifact@v4
         with:
           name: npm-audit-report
           path: npm-audit-report.json
           if-no-files-found: ignore
+
+      - name: Fail if high/critical vulnerabilities present
+        run: |
+          node -e "try { const r=require('./npm-audit-report.json'); const meta = r.metadata || {}; const vuln = meta.vulnerabilities || {}; const high = (vuln.high || 0) + (vuln.critical || 0); if (high > 0) { console.error('Found', high, 'high/critical vulnerabilities'); process.exit(1); } console.log('No high/critical vulnerabilities'); } catch (e) { console.error('Could not read npm-audit-report.json:', e.message); process.exit(1); }"
 
   codeql:
     name: CodeQL static analysis
