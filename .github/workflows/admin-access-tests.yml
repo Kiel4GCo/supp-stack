@@ -24,6 +24,24 @@ jobs:
           max_attempts: 3
           retry_wait_seconds: 15
           command: curl -fsSL https://bun.sh/install | bash && echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Registry connectivity healthcheck
+        timeout-minutes: 2
+        run: |
+          probe() {
+            name="$1"; url="$2"
+            for attempt in 1 2 3; do
+              if curl --fail --silent --show-error --location --max-time 10 -o /dev/null "$url"; then
+                echo "$name reachable"
+                return 0
+              fi
+              echo "$name probe failed (attempt $attempt)"
+              [ "$attempt" -lt 3 ] && sleep 5
+            done
+            echo "::error::$name unreachable at $url - failing fast before dependency installation"
+            return 1
+          }
+          probe "npm registry" "https://registry.npmjs.org/-/ping"
+          probe "bun.sh" "https://bun.sh"
       - name: Install dependencies (with backoff)
         run: |
           for attempt in 1 2 3; do
