@@ -1,25 +1,20 @@
-## Goal
-Add a new `/muscle-building-guide` content route (SEO-targeted) and wire it into site nav, sitemap, and llms.txt.
+# Fail-fast registry healthcheck in CI
 
-## Scope
-- New page: `src/pages/MuscleBuildingGuide.tsx`
-  - Long-form evidence-based guide covering: protein needs, creatine, beta-alanine, HMB, leucine/EAAs, vitamin D, omega-3, timing, sample stack.
-  - Semantic HTML: single `<h1>`, sectioned `<h2>`/`<h3>`, article/section landmarks.
-  - Internal links to relevant supplements (Creatine, Protein, Beta-Alanine, HMB) via `/supplement/:id` and to `/stack-builder`.
-  - Meta via `<Helmet>`: title (<60 chars), description (<160 chars), canonical, OG/Twitter tags, `Article` JSON-LD.
-  - Medical disclaimer block (per project memory).
-- Routing: register route in `src/App.tsx`.
-- Navigation: add "Muscle Building" entry to `src/components/layout/Header.tsx` `navItems` (desktop + accessible mobile handling — currently mobile only shows first 3; keep same pattern, add to desktop list).
-- Discovery:
-  - Add URL to `public/sitemap.xml` (priority 0.7, weekly).
-  - Add entry to `public/llms.txt` under Pages.
+Add a short connectivity probe before dependency installation in both workflows, so infra problems surface in seconds with a clear message instead of after minutes of install retries.
 
-## Technical details
-- Route path: `/muscle-building-guide`.
-- Uses existing `Layout` wrapper for consistent header/footer.
-- No backend changes, no new tables, no data fetching required — static content.
-- Keyword focus (from earlier Semrush suggestion): "muscle building supplements".
+## What changes
 
-## Out of scope
-- No CMS/database backing for the guide.
-- No new supplement entries.
+Both `.github/workflows/admin-access-tests.yml` and `.github/workflows/security-scan.yml` get a new step named **"Registry connectivity healthcheck"**, placed after Bun setup and before the install step.
+
+The step:
+- Probes `https://registry.npmjs.org/-/ping` and `https://bun.sh` with `curl --fail --silent --max-time 10`.
+- Retries each endpoint up to 3 times with a 5s pause (so a single blip is not fatal).
+- Prints a clear `::error::` annotation naming the unreachable endpoint and exits non-zero if a probe never succeeds.
+- Whole step is bounded by `timeout-minutes: 2` so it can never hang the job.
+
+In `security-scan.yml` the same step also covers the npm registry used by the `npm install --package-lock-only` audit step. The CodeQL and gitleaks jobs are untouched (they do not install npm dependencies).
+
+## Notes
+
+- Existing retry/backoff on Bun setup and install stays as-is; the healthcheck only shortens the feedback loop for hard outages.
+- No application code or dependencies change.
