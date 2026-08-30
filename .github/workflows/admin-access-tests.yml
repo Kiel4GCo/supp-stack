@@ -42,10 +42,21 @@ jobs:
           }
           probe "npm registry" "https://registry.npmjs.org/-/ping"
           probe "bun.sh" "https://bun.sh"
+      - name: Collect diagnostics on failure
+        if: failure()
+        run: |
+          echo "=== Tool versions ==="
+          echo "bun: $(bun --version 2>&1 || echo 'unavailable')"
+          echo "node: $(node --version 2>&1 || echo 'unavailable')"
+          echo "npm: $(npm --version 2>&1 || echo 'unavailable')"
+          echo "=== Runner ==="
+          echo "os: $RUNNER_OS / $RUNNER_ARCH, image: $ImageOS $ImageVersion"
+          echo "=== Last install output (tail) ==="
+          if [ -f install.log ]; then tail -n 100 install.log; else echo "no install.log captured"; fi
       - name: Install dependencies (with backoff)
         run: |
           for attempt in 1 2 3; do
-            if bun install --frozen-lockfile; then
+            if bun install --frozen-lockfile 2>&1 | tee install.log; then
               exit 0
             fi
             echo "bun install failed (attempt $attempt). Retrying in $((attempt * 15))s..."
