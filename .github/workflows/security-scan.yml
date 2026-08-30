@@ -47,11 +47,10 @@ jobs:
           }
           probe "npm registry" "https://registry.npmjs.org/-/ping"
           probe "bun.sh" "https://bun.sh"
-
       - name: Install dependencies (with backoff)
         run: |
           for attempt in 1 2 3; do
-            if bun install --frozen-lockfile; then
+            if bun install --frozen-lockfile 2>&1 | tee install.log; then
               exit 0
             fi
             echo "bun install failed (attempt $attempt). Retrying in $((attempt * 15))s..."
@@ -70,7 +69,7 @@ jobs:
       - name: Generate npm lockfile for audit (with backoff)
         run: |
           for attempt in 1 2 3; do
-            if npm install --package-lock-only --ignore-scripts --no-audit --no-fund; then
+            if npm install --package-lock-only --ignore-scripts --no-audit --no-fund 2>&1 | tee npm-lockfile.log; then
               exit 0
             fi
             echo "npm lockfile generation failed (attempt $attempt). Retrying in $((attempt * 15))s..."
@@ -105,6 +104,21 @@ jobs:
             console.error('Failed to parse npm-audit-report.json:', e);
             process.exit(1);
           }"
+
+      - name: Collect diagnostics on failure
+        if: failure()
+        run: |
+          echo "=== Tool versions ==="
+          echo "bun: $(bun --version 2>&1 || echo 'unavailable')"
+          echo "node: $(node --version 2>&1 || echo 'unavailable')"
+          echo "npm: $(npm --version 2>&1 || echo 'unavailable')"
+          echo "=== Runner ==="
+          echo "os: $RUNNER_OS / $RUNNER_ARCH, image: $ImageOS $ImageVersion"
+          echo "=== Last install output (tail) ==="
+          for f in install.log npm-lockfile.log; do
+            if [ -f "$f" ]; then echo "--- $f ---"; tail -n 100 "$f"; fi
+          done
+          [ -f install.log ] || [ -f npm-lockfile.log ] || echo "no install logs captured"
 
   codeql:
     name: CodeQL static analysis
