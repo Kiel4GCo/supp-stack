@@ -105,6 +105,21 @@ jobs:
             process.exit(1);
           }"
 
+      - name: Collect diagnostics on failure
+        if: failure()
+        run: |
+          echo "=== Tool versions ==="
+          echo "bun: $(bun --version 2>&1 || echo 'unavailable')"
+          echo "node: $(node --version 2>&1 || echo 'unavailable')"
+          echo "npm: $(npm --version 2>&1 || echo 'unavailable')"
+          echo "=== Runner ==="
+          echo "os: $RUNNER_OS / $RUNNER_ARCH, image: $ImageOS $ImageVersion"
+          echo "=== Last install output (tail) ==="
+          for f in install.log npm-lockfile.log; do
+            if [ -f "$f" ]; then echo "--- $f ---"; tail -n 100 "$f"; fi
+          done
+          [ -f install.log ] || [ -f npm-lockfile.log ] || echo "no install logs captured"
+
   codeql:
     name: CodeQL static analysis
     runs-on: ubuntu-latest
