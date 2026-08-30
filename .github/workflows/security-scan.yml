@@ -84,7 +84,7 @@ jobs:
       - name: Generate npm lockfile for audit (with backoff)
         run: |
           for attempt in 1 2 3; do
-            if npm install --package-lock-only --ignore-scripts --no-audit --no-fund; then
+            if npm install --package-lock-only --ignore-scripts --no-audit --no-fund 2>&1 | tee npm-lockfile.log; then
               exit 0
             fi
             echo "npm lockfile generation failed (attempt $attempt). Retrying in $((attempt * 15))s..."
