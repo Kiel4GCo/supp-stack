@@ -28,6 +28,20 @@ jobs:
           max_attempts: 3
           retry_wait_seconds: 15
           command: curl -fsSL https://bun.sh/install | bash && echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Cache Bun install cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-install-${{ hashFiles('**/bun.lockb', '**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-install-
+      - name: Cache npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-audit-${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-audit-
 
       - name: Registry connectivity healthcheck
         timeout-minutes: 2
