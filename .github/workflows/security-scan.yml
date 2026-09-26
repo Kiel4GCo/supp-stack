@@ -35,11 +35,15 @@ jobs:
           key: ${{ runner.os }}-bun-install-${{ hashFiles('**/bun.lockb', '**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-install-
-      - name: Cache npm cache
-        uses: actions/cache@v4
+      # Restore keyed on the audit lockfile hash (generated a few steps below) so
+      # dependency changes always invalidate stale cached packages; the prefix
+      # restore-key falls back to the most recent cache (e.g. keyed on package.json)
+      # when no lockfile-keyed cache exists yet.
+      - name: Restore npm cache
+        uses: actions/cache/restore@v4
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-npm-audit-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-npm-audit-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-audit-
 
