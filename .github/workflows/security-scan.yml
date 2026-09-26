@@ -96,6 +96,15 @@ jobs:
           echo "npm lockfile generation failed after 3 attempts"
           exit 1
 
+      # Save keyed on the now-generated audit lockfile hash, so the next run's
+      # restore key matches exactly when dependencies changed and misses when stale.
+      - name: Save npm cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-audit-${{ hashFiles('**/package-lock.json') }}
+
       - name: Run npm audit and save report
         run: npm audit --json > npm-audit-report.json || true
 
