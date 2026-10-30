@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/Layout';
 import { useAuth } from '@/hooks/useAuth';
 import { useSupplements } from '@/hooks/useSupplements';
 import { SupplementForm } from '@/components/admin/SupplementForm';
+import { CIFailureAnalyzer } from '@/components/admin/CIFailureAnalyzer';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -318,6 +319,8 @@ const Admin = () => {
             )}
           </CardContent>
         </Card>
+
+        <CIFailureAnalyzer />
 
         <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
           <AlertDialogContent>
