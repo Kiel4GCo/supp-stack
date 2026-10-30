@@ -71,6 +71,15 @@ Deno.serve(async (req) => {
         } finally { controller.close(); }
       },
     });
+    await gateway.waitForRunId();
+    const upstreamFailure = gateway.getFailure();
+    if (upstreamFailure) {
+      const message = safeGatewayError(upstreamFailure.body, 'Lovable AI could not start this analysis.');
+      if (upstreamFailure.status === 402 || upstreamFailure.status === 403) {
+        await stateClient.from('ci_ai_access_state').upsert({ id: 'ci-analyzer', status: upstreamFailure.status, message, updated_at: new Date().toISOString() });
+      }
+      return json(message, upstreamFailure.status);
+    }
     return withLovableAiGatewayRunIdHeader(new Response(stream, { headers: { ...corsHeaders, 'Content-Type': 'application/x-ndjson', 'Cache-Control': 'no-store' } }), gateway);
   } catch {
     return json(req.signal.aborted ? 'Analysis stopped.' : 'Unable to start CI analysis.', req.signal.aborted ? 499 : 500);
