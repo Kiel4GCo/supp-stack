@@ -77,6 +77,8 @@ jobs:
           else
             echo "Non-admin user branch: SKIPPED (secrets unavailable, e.g. fork PR)"
           fi
+      - name: Verify workflow concurrency rules
+        run: bunx vitest run src/test/ci-concurrency.test.ts
       - name: Run admin-access vitest suite
         run: bunx vitest run src/test/admin-access.test.ts
       - name: Collect diagnostics on failure
